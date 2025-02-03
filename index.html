@@ -3,43 +3,58 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My First Website</title>
+  <title>Google Sign-In</title>
+  <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-auth.js"></script>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      margin: 0;
-      padding: 0;
-      background-color: #f4f4f9;
-    }
-    header {
-      background-color: #4CAF50;
-      color: white;
-      padding: 10px 0;
-    }
-    main {
-      padding: 20px;
-    }
-    footer {
-      background-color: #333;
-      color: white;
-      padding: 10px 0;
-      position: fixed;
-      width: 100%;
-      bottom: 0;
-    }
+    body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+    button { margin: 10px; padding: 10px; }
   </style>
 </head>
 <body>
-  <header>
-    <h1>Welcome to My Website!</h1>
-  </header>
-  <main>
-    <p>This is a simple HTML page hosted on GitHub Pages.</p>
-    <a href="https://github.com" target="_blank">Visit GitHub</a>
-  </main>
-  <footer>
-    <p>Created by [Your Name] © 2025</p>
-  </footer>
+  <h1>Google Authentication</h1>
+  <button id="login-btn">Login with Google</button>
+  <button id="logout-btn" style="display:none;">Logout</button>
+  <p id="user-info"></p>
+
+  <script>
+    // Firebase configuration (Replace these with your actual Firebase project details)
+    const firebaseConfig = {
+      apiKey: "AIzaSyASZOp6m7HAsz-UX_1Nvj8owHBx1-lANno",
+      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_PROJECT_ID.appspot.com",
+      messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+
+    // Initialize Firebase
+    const app = firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+
+    // Login with Google
+    document.getElementById("login-btn").addEventListener("click", () => {
+      const provider = new firebase.auth.GoogleAuthProvider();
+      auth.signInWithPopup(provider)
+        .then((result) => {
+          const user = result.user;
+          document.getElementById("user-info").innerText = `Welcome, ${user.displayName}`;
+          document.getElementById("login-btn").style.display = "none";
+          document.getElementById("logout-btn").style.display = "inline-block";
+        })
+        .catch((error) => {
+          alert(error.message);
+        });
+    });
+
+    // Logout
+    document.getElementById("logout-btn").addEventListener("click", () => {
+      auth.signOut().then(() => {
+        document.getElementById("user-info").innerText = "You have logged out.";
+        document.getElementById("login-btn").style.display = "inline-block";
+        document.getElementById("logout-btn").style.display = "none";
+      });
+    });
+  </script>
 </body>
 </html>
